@@ -1,0 +1,734 @@
+#include "xmlwriter.h"
+
+
+
+xmlwriter::xmlwriter()
+{
+    
+}
+
+
+void xmlwriter::getfilepath(QString mfile,QString tarpdf)
+{
+    //gets the directory of xml document
+    QDir dir(mfile);
+    QStringList path,path1;
+    QDirIterator it(mfile, QDirIterator::Subdirectories);
+    dir.setFilter(QDir::Files | QDir::AllDirs | QDir::NoDotAndDotDot);
+    dir.setNameFilters(path1<<"*.xml");
+    
+    
+    
+    
+    QFileInfoList list =dir.entryInfoList();
+    
+    for(int i=0;i<list.size();i++)
+    {
+        QFileInfo finfo =list.at(i);
+        QString file2 = finfo.fileName();
+        path.append(dir.filePath(file2));
+        
+        
+    }
+    
+    
+    
+    for(int y =0;y<path.length();y++)
+    {
+        qDebug()<<path[y];
+    }
+    //calss write xml for pdf generation
+    writexml(path,tarpdf);
+}
+
+
+
+
+
+
+void xmlwriter::writexml(QStringList filename,QString tarpdf)
+{
+    //creates a pdf printer
+    QTextDocument document;
+    QPrinter printer(QPrinter::PrinterResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setPaperSize(QPrinter::A4);
+    printer.setOutputFileName(tarpdf+"/doc.pdf");
+    printer.setPageMargins(QMarginsF(15, 15, 15, 15));
+    //layout of pdf file
+    QString html=
+            "<head>"
+            "<style>"
+            "table td.close{background-color:grey;}"
+            "th{background-color:grey;}"
+            "</style>"
+            "</head>"
+            
+            "<br><br>"
+            "<div align=left>"
+            "<b><i><font size=\"10\">DOCGEN</i></b></font><font size=\"9\" color=\"blue\"><b>&lt;GENERIC PRODUCT&gt;</b></font>"
+            "<br><br>"
+            "<font size=\"8\"><b>Release Note</b></font>"
+            "<br><br>"
+            "</div>"
+            
+            
+            "<img src=\"C:/Users/varun/Desktop/ab.jpg\" width=\"600\" height=\"650\">"
+            "<div style=\"page-break-before: always\"></div>"
+            
+            
+            
+            "<p>"
+            "<font size=\"3\" color=\"red\"><i>"
+            "&lt;Red coloured &lt;italic text&gt; in angle brackets provides help for filling in the document and must be deleted.&gt;<br>"
+            "&lt;Blue coloured <font color=\"blue\">&lt;standard formatted text&gt;</font> in angle brackets must be replaced by the product/component specific proper content and afterwards must be changed into black coloured text.&gt;<br>"
+            "&lt;Black coloured <font color=\"black\">standard formatted text</font> is considered generic and must not be changed.&gt;<br>"
+            "&lt;Be aware that there is information in the document (&lt;Product&gt;,&lt;Doc. Number&gt;) for example in the document header and in the cover page which is filled in using document properties; please modify document properties whenever this information is to be updated and update all their instances (fields) in the document  accordingly. Use Document Properties ->Advanced Properties->Custom and change the value of these properties.&gt;<br>"
+            "<br><br>"
+            "&lt;DELETE THIS PAGE WHEN THE DOCUMENT IS READY!&gt;"
+            
+            "</i></font>"
+            "</p>"
+            
+            
+            
+            "<div style=\"page-break-before: always\"></div>"
+            "<h3s><b>Table Of Contents</b></h3>"
+            "<h6><b>1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Introduction.................................................................................................................5</b></h6>"
+            "<h6><p>1.1&nbsp;&nbsp;&nbsp;&nbsp;Purpose................................................................................................................................................................5</p></h6><br>"
+            "<h6><b>2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Product Definition.........................................................................................................7</b></h6>"
+            "<p><h6>2.1&nbsp;&nbsp;&nbsp;&nbsp;General Description.................................................................................................................................................7<h6>"
+            "<p><h6>2.2&nbsp;&nbsp;&nbsp;&nbsp;Product Identification.............................................................................................................................................7<h6>"
+            "<p><h6>2.3&nbsp;&nbsp;&nbsp;&nbsp;Release Content......................................................................................................................................................8<h6>"
+            "<h6>2.3.1&nbsp;&nbsp;SW Deliveries...........................................................................................................................................................8<h6>"
+            "<h6>2.3.2&nbsp;&nbsp;HW Deliveries...........................................................................................................................................................8<h6>"
+            "<h6>2.3.2&nbsp;&nbsp;Documentation.........................................................................................................................................................9<h6>"
+            "<h6>2.3.2&nbsp;&nbsp;Compatibility to Previous release.........................................................................................................................9<h6></p>"
+            "<p><h6>2.4&nbsp;&nbsp;&nbsp;&nbsp;Restrictions..............................................................................................................................................................10<h6>"
+            "<h6>2.4.1&nbsp;&nbsp;Functional Restrictions...........................................................................................................................................10<h6>"
+            "<h6>2.4.2&nbsp;&nbsp;Functional Gap..........................................................................................................................................................10<h6>"
+            "<h6>2.4.3&nbsp;&nbsp;Missing Activities....................................................................................................................................................10<h6><br>"
+            "<h6><b>3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Installation...................................................................................................................11</b></h6><br>"
+            "<h6><b>4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Changes.......................................................................................................................12</b></h6>"
+            "<p><h6>4.1&nbsp;&nbsp;&nbsp;&nbsp;Release &lt;v.r.u.b&gt;.....................................................................................................................................................12</p><h6>"
+            "<h6>4.1.1&nbsp;&nbsp;New or Enhanced Functions....................................................................................................................................12<h6>"
+            "<h6>4.1.2&nbsp;&nbsp;Corrected Errors.......................................................................................................................................................2<h6>"
+            "<h6>4.1.3&nbsp;&nbsp;Open CRs...................................................................................................................................................................2<h6></p><br>"
+            "<h6><b>5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Release History.............................................................................................................<b id=1></b></b></h6>"
+            "<p><h6>5.1&nbsp;&nbsp;&nbsp;&nbsp;Release &lt;release #-1&gt;............................................................................................................................................2<h6>"
+            "<h6>5.1.1&nbsp;&nbsp;New or Enhanced Functions.....................................................................................................................................2<h6>"
+            "<h6>5.1.2&nbsp;&nbsp;Corrected Errors........................................................................................................................................................2<h6><p>"
+            "<p><h6>5.2&nbsp;&nbsp;&nbsp;&nbsp;Release &lt;release #-2&gt;............................................................................................................................................2<h6>"
+            "<h6>5.2.1&nbsp;&nbsp;New or Enhanced Functions.....................................................................................................................................2<h6>"
+            "<h6>5.2.2&nbsp;&nbsp;Corrected Errors........................................................................................................................................................2<h6></p>"
+            "<p><h6>5.3&nbsp;&nbsp;&nbsp;&nbsp;Release &lt;release #-3&gt;............................................................................................................................................2<h6>"
+            "<h6>5.3.1&nbsp;&nbsp;New or Enhanced Functions.....................................................................................................................................2<h6>"
+            "<h6>5.3.2&nbsp;&nbsp;Corrected Errors........................................................................................................................................................2<h6></p>"
+            "<h6><p>5.4&nbsp;&nbsp;&nbsp;&nbsp;History Archive..........................................................................................................................................................2</p><h6>"
+            "<p><b><h6>Problem Reporting...............................................................................................................<b id=2></b></h6></b></p>"
+            "<p><b><h6>Contact Addresses................................................................................................................<b id=3></b></h6></b></p>"
+            "<p><b><h6>Restrictions and Obligations....................................................................................................<b id=4></b></h6></b></p>"
+            "<p><b><h6>Revision History...................................................................................................................<b id=5></b></h6></b></p>"
+            
+            
+            
+            
+            
+            "<div style=\"page-break-before: always\"></div>"
+            "<h3><b>List Of Tables</b></h3>"
+            "<p><b>Table1:</b> Referenced Documents............................................................................................................2</p>"
+            "<p><b>Table2:</b> Referenced Standards...............................................................................................................2</p>"
+            "<p><b>Table3:</b> Terms and Abbreviations.........................................................................................................2</p>"
+            "<p><b>Table4:</b> Product Identification...............................................................................................................2</p>"
+            "<p><b>Table5:</b> SW Deliverables.........................................................................................................................2</p>"
+            "<p><b>Table6:</b> HW Deliverables.........................................................................................................................2</p>"
+            "<p><b>Table7:</b> Documentaton............................................................................................................................2</p>"
+            "<p><b>Table8:</b> Compatibility Matrix.................................................................................................................2</p>"
+            "<p><b>Table9:</b> New and Enhanced Functions..................................................................................................2</p>"
+            "<p><b>Table10:</b> Corrected Errors.....................................................................................................................2</p>"
+            "<p><b>Table11:</b> Open CR List...........................................................................................................................2</p>"
+            "<p><b>Table12:</b> New and Enhanced Functions................................................................................................2</p>"
+            "<p><b>Table13:</b> Corrected Errors......................................................................................................................2</p>"
+            "<p><b>Table14:</b> New and Enhanced Functions................................................................................................2</p>"
+            "<p><b>Table15:</b> Corrected Errors......................................................................................................................2</p>"
+            "<p><b>Table16:</b> New and Enhanced Functions.................................................................................................2</p>"
+            "<p><b>Table17:</b> Corrected Errors......................................................................................................................2</p>"
+            "<p><b>Table18:</b> Previously Implemented CRs.................................................................................................2</p>"
+            "<p><b>Table19:</b> Revision Histroy.......................................................................................................................2</p>"
+            
+            
+            
+            "<div style=\"page-break-before: always\"></div>"
+            "<b><h1>1.&nbsp;Introduction</h1></b><br>"
+            "<h3>1.1&nbsp;&nbsp;Purpose</h3>"
+            "<font size=\"4\"><p>This document is the Release Note for the DOCGEN<font color=\"blue\">&lt;GENERIC Product&gt; &lt;a.r.u.c&gt;</p></font>"
+            
+            "<br><h3>1.2&nbsp;&nbsp;Intended Audience</h3>"
+            "<font size=\"4\" color=\"red\"><i>&lt;State here the intended audience.&gt;</i></font>"
+            "<p><font size=\"4\">The audience of this document and the users of the DOCGEN release are supposed to have knowledge about the document generating hardware and software</font></p>"
+            
+            "<br><h3>1.3&nbsp;&nbsp;References</h3>"
+            "<p><font size=\"4\" color=\"red\"><i>&lt;Include here all the related documents and standards which are referenced in this document. Please list only documents and standards which are referenced in the text and strictly avoid copying long lists of “references” from other sources. Only customer documentation must be referenced; strictly avoid referring to internal design documentation.  If no standards referenced please delete the table with the standards below.&gt;</i></font>"
+            "<p>"
+            "<font size=\"4\">If no revision index is stated (--) in the table the latest revision is to be used for reference purpose.<font color=\"red\"><i>&lt;This is only the case for generic references or living documents like e.g. glossaries, issue lists or document plans.&gt;</i></font>"
+            
+            
+            "<p>"
+            "<table border=\"1\" width=\"400\" cellpadding=\"2\">"
+            "<tr>"
+            "<th><b>Ref</b></th>"
+            "<th><b>DocumentTitle</b></th>"
+            "<th><b>Identification</b></th>"
+            "<th><b>Rev.</b></th>"
+            "</tr>"
+            "<tr>"
+            "<td>[01]</td>"
+            "<td>Document Generator Platform Terms & Abbreviations</td>"
+            "<td>9AB-226649</td>"
+            "<td>--</td>"
+            "</tr>"
+            "<tr>"
+            "<td>[02]</td>"
+            "<td>DOCGEN Download Instructions</td>"
+            "<td>9AB-234649</td>"
+            "<td>--</td>"
+            "<tr>"
+            "<td><font color=\"blue\">[03]</font></td>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "</table>"
+            "<br><br>"
+            "<b>Table 1:</b> Referenced Documents"
+            "</p>"
+            
+            "<br>"
+            
+            "<p>"
+            "<table border=\"1\" width=\"400\" cellpadding=\"2\">"
+            "<tr>"
+            "<th><b>Ref</b></th>"
+            "<th><b>Standard Title</b></th>"
+            "<th><b>Identification</b></th>"
+            "<th><b>Year</b></th>"
+            "</tr>"
+            "<tr>"
+            "<td>[S01]</td>"
+            "<td><font color=\"blue\">&lt;Document applications - Communications, extraction and processing systems - Software for railway control and protection systems&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;TY 00128&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;2011&gt;</font></td>"
+            "</tr>"
+            "<tr>"
+            "<td>[S02]</td>"
+            "<td></td>"
+            "<td></td>"
+            "<td></td>"
+            "<tr>"
+            "<td>[S03]</td>"
+            "<td></td>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "</table>"
+            "<br><br>"
+            "<b>Table 2:</b> Referenced Standards"
+            "</p>"
+            "<br><br><br><br><br><br><br><br><br>"
+            
+            "<h3>1.4&nbsp;&nbsp;Terms and Abbreviations</h3>"
+            "<font color=\"red\"><i>&lt;Please make sure you include in the table below all the abbreviations and terms you use in this document and strictly avoid copying a long list of terms or abbreviations from other sources. All entries should be sorted in an alphanumerical order&gt;</i></font>"
+            "<p>"
+            "The table below lists the terms essential for understanding this document. For a complete list of DOCGEN terms and acronyms please refer to Document generating Terms & Abbreviations [01]"
+            "</p>"
+            
+            "<p>"
+            "<table border=\"1\" width=\"400\" cellpadding=\"2\">"
+            "<tr>"
+            "<th><b>Abbreviation</b></th>"
+            "<th><b>Definition</b></th>"
+            "</tr>"
+            "<tr>"
+            "<td>CR</td>"
+            "<td>Request for documentation</td>"
+            "</tr>"
+            "<tr>"
+            "<td>a.r.u.c</td>"
+            "<td>Version information of a release: v: version, r: release, u: update, b:build</td>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "</table>"
+            "<br><br>"
+            "<b>Table 3:</b> Terms and Abbreviations"
+            "</p>"
+            
+            
+            
+            "<div style=\"page-break-before: always\"></div>"
+            "<b><h1>2.&nbsp;Product Definition</h1></b><br>"
+            "<h3>2.1&nbsp;&nbsp;General Description</h3>"
+            "<p><i><font color=\"red\">&lt;Add a short and more general description of the product. A detailed description is listed in the user manual. Beside the main use case the system environment shall be mentioned&gt;</font></i></p>"
+            "<p><img src=\"C:/Users/sotripat/Desktop/abc.jpg\" width=\"600\" height=\"200\" align=\"middle\"></p>"
+            
+            "<b>Figure1:</b> Sample Figure"
+            "<br><h3>2.2&nbsp;&nbsp;Product Identification</h3>"
+            "<p>The DOCGEN <font color=\"blue\">&lt;GENERIC Product&gt;  &lt;a.r.u.c&gt;</font> is identified with the following identification numbers:</p>"
+            
+            "<p>"
+            "<table border=\"1\" width=\"400\" cellpadding=\"2\">"
+            "<tr>"
+            "<th><b>Product</b></th>"
+            "<th><b>Identification</b></th>"
+            "<th><b>Remark</b></th>"
+            "</tr>"
+            "<tr>"
+            "<td>DOCGEN <font color=\"blue\">&lt;GENERIC Product&gt; </font></td>"
+            "<td><font color=\"blue\">&lt;3E-number&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;NOT APPLICABLE&gt;</font></td>"
+            "</tr>"
+            "<tr>"
+            "<td><font color=\"red\">&lt;Examples:&gt;</td>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "<tr>"
+            "<td>DOCGEN <font color=\"blue\">&lt;GENERIC Product&gt; </td>"
+            "<td><font color=\"blue\">&lt;3EST000211-9813&gt;</td>"
+            "<td><font color=\"blue\">&lt;NOT APPLICABLE&gt;</td>"
+            "</tr>"
+            
+            "<tr>"
+            "<td><font color=\"blue\">e.g.&lt;DOCGEN CC CSS 3.1.0&gt;</font></td>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            
+            "<tr>"
+            "<td><font color=\"blue\">DOCGEN &lt;GENERIC Product&gt; e.g.&lt;DOCGEN 3.1.0&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;3AB-9814&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;Can be used on any device. It is not suitable for devices running .xml files.&gt;</font></td>"
+            "</tr>"
+            
+            "<tr>"
+            "<td><font color=\"blue\">DOCGEN &lt;GENERIC Product&gt;  e.g.&lt;DOCGEN 3.1.1&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;3AB-9773&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;Compatible with all platform versions.&gt;</font></td>"
+            "</tr>"
+            
+            "<tr>"
+            "<td><font color=\"blue\">DOCGEN &lt;GENERIC Product&gt;   e.g.&lt;DOCGEN 3.1.2&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;3AB-9813&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;VCU-C, TCN-GW&gt;</font></td>"
+            "</tr>"
+            "</font>"
+            "</table>"
+            "<br><br>"
+            "<b>Table 4:</b> Product Identification"
+            "</p>"
+            
+            "<br><br>"
+            
+            "<br><h3>2.3&nbsp;&nbsp;Release Content</h3>"
+            "<h4>2.3.1&nbsp;SW Deliverables</h4>"
+            
+            "<p>"
+            "<table border=\"1\" width=\"400\" cellpadding=\"2\">"
+            "<tr>"
+            "<th>Identification</th>"
+            "<th>Version</th>"
+            "<th>Design Elements </th>"
+            "<th><font color=\"blue\">&lt;Previous Version&gt;</font></th>"
+            "<th><font color=\"blue\">&lt;Future Version&gt;</font></th>"
+            
+            "</tr>"
+            "<tr>"
+            "<td><font color=\"blue\">&lt;AB-9813&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;2.1.0&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;HTML,CSS&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;1.5.3&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;2.1.2&gt;</font></td>"
+            "</tr>"
+            "<tr>"
+            "<td class=\"close\">&lt;AB-8823&gt;</td>"
+            "<td class=\"close\"></td>"
+            "<td class=\"close\"><font color=\"blue\">&lt;HTML,CSS&gt;</font></td>"
+            "<td class=\"close\"><font color=\"blue\">&lt;2.1.5&gt;</font></td>"
+            "<td class=\"close\"><font color=\"blue\">&lt;3.1.0&gt;</font></td>"
+            "</tr>"
+            "<tr>"
+            "<td class=\"close\">AB-7833</td>"
+            "<td class=\"close\"></td>"
+            "<td class=\"close\"><font color=\"blue\">&lt;HTML,CSS&gt;</font></td>"
+            "<td class=\"close\"><font color=\"blue\">&lt;3.1.5&gt;</font></td>"
+            "<td class=\"close\"><font color=\"blue\">&lt;4.1.0&gt;</font></td>"
+            "</tr>"
+            "<tr>"
+            "<td class=\"close\">AB-6843</td>"
+            "<td class=\"close\"></td>"
+            "<td class=\"close\"><font color=\"blue\">&lt;HTML,CSS&gt;</font></td>"
+            "<td class=\"close\"><font color=\"blue\">&lt;4.1.5&gt;</font></td>"
+            "<td class=\"close\"><font color=\"blue\">&lt;5.1.0&gt;</font></td>"
+            "</tr>"
+            "</table>"
+            "<br><br>"
+            "<b>Table 5:</b> SW Deliverables"
+            "</p>"
+            
+            
+            
+            "<br><br>"
+            "<p>"
+            "<h4>2.3.2&nbsp;Documentation</h4>"
+            "<p>The following documents are related to the delivered <font color=\"blue\">&lt;product&gt;</font> and are part of the delivery.</p>"
+            
+            "<p>"
+            "<table border=\"1\" width=\"400\" cellpadding=\"2\">"
+            "<tr>"
+            "<th>Document ID</th>"
+            "<th>Document Title</th>"
+            "<th><font color=\"blue\">&lt;TOR&gt;</font></th>"
+            "<th><font color=\"blue\">&lt;TOO&gt;</font></th>"
+            "<th><font color=\"blue\">&lt;TOD&gt;</font></th>"
+            "</tr>"
+            "<tr>"
+            "<td><font color=\"blue\">&lt;AB-number&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;Title&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;Time&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;Time&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;TIme&gt;</font></td>"
+            "</tr>"
+            
+            "<tr>"
+            "<td><font color=\"red\"><i>&lt;Example:&gt;</i></font></td>"
+            "<td></td>"
+            "<td></td>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "<tr>"
+            "<td><font color=\"blue\">&lt;AB-6084&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;BootStrap Reference Manual&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;6.34.09&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;6.35.0&gt;</font></td>"
+            "<td><font color=\"blue\">&lt;6.35.30&gt;</font></td>"
+            "</tr>"
+            "<tr>"
+            "</table>"
+            "<br><br>"
+            "<b>Table 7:</b> Documentation"
+            "</p>"
+            "<p><font color=\"red\"><i>&lt;Only customer documentation must be referenced; strictly avoid referring to internal design documentation.&gt;</i></font></p>"
+            "<br>"
+            
+            
+            "<p>TIme Reference:</p>"
+            "<p>TOR-Time Of Request </p>"
+            "<p>TOO-Time Of Operation</p>"
+            "<p>TOD-Time Of Delivery</p>"
+            
+            "<p><font color=\"red\"><i>&lt;Change the above text in case this is not correct for this release&gt;</i></font></p>"
+            
+            "<div style=\"page-break-before: always\"></div>"
+            "<h3>2.4&nbsp;&nbsp;Restrictions</h3>"
+            "<p><h4>2.4.1&nbsp;Functional Restrictions</h4></p>"
+            "<p><font color=\"red\"><i>&lt;Add here restrictions of functionality. If there is nothing to state in the chapter then the keyword \"None\" shall be used; the headline shall remain.&gt;</i></font></p>"
+            
+            "<br>"
+            "<p><h4>2.4.2&nbsp;Functional Gap</h4>"
+            "<p><font color=\"red\"><i>&lt;Add here deviations from the requirements. If there is nothing to state in the chapter then the keyword \"None\" shall be used; the headline shall remain.&gt;</i></font></p>"
+            
+            "<br>"
+            "<p><h4>2.4.3&nbsp;Missing Activities</h4>"
+            "<p><font color=\"red\"><i>&lt;Add here process related activities that have not been performed. If there is nothing to state in the chapter then the keyword \"None\" shall be used; the headline shall remain.&gt;</i></font></p>"
+            
+            
+            
+            "<div style=\"page-break-before: always\"></div>"
+            "<b><h1>3.&nbsp;Installation</h1></b>"
+            "<p><font color=\"red\"><i>&lt; Dependent on the delivery: Tools or onboard products, choose one of the following sentences which is correct for the scope of the release&gt;</i></font></p>"
+            "<p>For installation of DOCGEN Tools, follow the installation guides for each product.</p>"
+            "<p>For the onboard SW follow the instructions of the document: DocumentGenerator_Download_Instructions [02].</p>"
+            
+            
+            
+            "<div style=\"page-break-before: always\"></div>"
+            "<b><h1>4.&nbsp;Changes</h1></b><br>"
+            "<h3>4.1&nbsp;&nbsp;Release</h3>"
+            "<h4>4.1.1&nbsp;New or Enhanced Functions</h4>"
+            "<p>The following are new or enhanced functionality have been resolved since the previous release. </p>"
+            
+            "<p>"
+            "<table border=\"1\" width=\"600\" cellpadding=\"2\">"
+            "<tr>"
+            "<th><b>Function Name</b></th>"
+            "<th><b>Function_Description</b></th>"
+            "<th><b>Return_Type</b></th>"
+            "<th><b>parameters</b></th>"
+            "<th><b>Author</b></th>"
+            "<th><b>Date</b></th>"
+            "<th><b>Reviewer</b></th>"
+            "</tr id=1>"
+            "</table>"
+            "<br><br>"
+            "<b>Table 9:</b> New and Enhanced Functions"
+            "</p>"
+            "<br>"
+            
+            "<p><h4>4.1.2&nbsp;Corrected Errors</h4></p>"
+            "<p>The following data have been corrected since the previous release.</p>"
+            
+            "<p>"
+            "<table border=\"1\" width=\"400\" cellpadding=\"2\">"
+            "<tr>"
+            "<th><b>Errors.</b></th>"
+            "<th><b>Correction</b></th>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "</table>"
+            "<br><br>"
+            "<b>Table 10:</b> Corrected Errors"
+            "</p>"
+            
+            
+            
+            "<div style=\"page-break-before: always\"></div>"
+            "<b><h1>5.&nbsp;Release History</h1></b>"
+            "<p><font color=\"red\"><i>&lt; For the previous three releases: copy the content of chapter 4.1.1 and 4.1.2 into the chapters below. For older releases please use the table in the History Archive chapter.&gt;</i></font></p>"
+            
+            "<h3>5.1&nbsp;&nbsp;Release <font color=\"blue\">&lt;release # -1&gt;</font></h3>"
+            "<h4>5.1.1&nbsp;New or Enhanced Functions</h4>"
+            "<p>The following are new or enhanced functionality have been resolved since the previous release.</p>"
+            
+            "<p>"
+            "<table border=\"1\" width=\"400\" cellpadding=\"2\">"
+            "<tr>"
+            "<th><b>Function.</b></th>"
+            "<th><b>Description</b></th>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "</table>"
+            "<br><br>"
+            "<b>Table 12:</b> New and Enhanced Functions"
+            "</p>"
+            "<br>"
+            "<p><h4>5.1.2&nbsp;Corrected Errors</h4></p>"
+            "<p>The following data have been corrected since the previous release.</p>"
+            
+            "<p>"
+            "<table border=\"1\" width=\"400\" cellpadding=\"2\">"
+            "<tr>"
+            "<th><b>Errors</b></th>"
+            "<th><b>Correction</b></th>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "</table>"
+            "<br><br>"
+            "<b>Table 13:</b> Corrected Errors"
+            "</p>"
+            
+            "<div style=\"page-break-before: always\"></div>"
+            
+            "<h3>5.2&nbsp;&nbsp;Release <font color=\"blue\">&lt;release # -2&gt;</font></h3>"
+            "<h4>5.2.1&nbsp;New or Enhanced Functions</h4>"
+            "<p>The following are new or enhanced functionality have been resolved since the previous release.</p>"
+            
+            "<p>"
+            "<table border=\"1\" width=\"400\" cellpadding=\"2\">"
+            "<tr>"
+            "<th><b>Function</b></th>"
+            "<th><b>Description</b></th>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "</table>"
+            "<br><br>"
+            "<b>Table 14:</b> New and Enhanced Functions"
+            "</p>"
+            "<br>"
+            "<p><h4>5.2.2&nbsp;Corrected Errors</h4></p>"
+            "<p>The following data have been corrected since the previous release.</p id=1>"
+            
+            "<p>"
+            "<table border=\"1\" width=\"400\" cellpadding=\"2\">"
+            "<tr>"
+            "<th><b>Errors.</b></th>"
+            "<th><b>Correction</b></th>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "</table>"
+            "<br><br>"
+            "<b>Table 15:</b> Corrected Errors"
+            "</p>"
+            
+            "<div style=\"page-break-before: always\"></div>"
+            
+            "<h3>5.4&nbsp;&nbsp;History Archive</font></h3>"
+            "<p>The table below includes the data that has been implemented in previous releases and that are not explicitly stated in the chapters above.</p>"
+            "<p>"
+            "<table border=\"1\" width=\"400\" cellpadding=\"2\">"
+            "<tr>"
+            "<th><b>Function</b></th>"
+            "<th><b>Description</b></th>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "<tr>"
+            "<td></td>"
+            "<td></td>"
+            "</tr>"
+            "</table>"
+            "<br><br>"
+            "<b>Table 18:</b> Previously Implemented Functions"
+            "</p id=2>"
+            
+            "<div style=\"page-break-before: always\"></div>"
+            
+            "<h1>Problem Reporting</h1>"
+            "<p> Detected problems have to be reported via </p>"
+            "<p> •	Respective DOCGEN project </p>"
+            "<p> •	If not available, via Helpline.</p>"
+            
+            
+            
+            "<div style=\"page-break-before: always\"></div>"
+            "<h1>Contact Addresses</h1>"
+            "<p><b>If you need any information about the product please contact the following mentioned</b></p>"
+            "<p><b>Chennai:</b></p>"
+            "<p>Phone:	+923456734</p>"
+            "<p>E-mail:	march04varun@gmail.com</p>"
+            "<br>"
+            "<p><b>Vadodara:</b></p>"
+            "<p>Phone:	+999456734</p>"
+            "<p>E-mail:	april04varun@gmail.com</p>"
+            "<br>"
+            "<p><b>For further information please refer to DOCGEN's eBok at:</b></p>"
+            "<p>http://ebok.docgen.com</p>"
+            
+            
+            
+            ;
+    
+    for(int z=0; z<filename.length(); z++)
+    {
+        //extracts data from xml
+        QDomDocument document1;
+        QFile file1(filename[z]);
+        file1.open(QIODevice::ReadOnly | QIODevice::Text);
+        document1.setContent(&file1);
+        QDomElement root = document1.firstChildElement();
+        QDomNodeList itemsl = root.childNodes();
+        int m = html.indexOf("</tr id=1>")+10;
+        QString var;
+        
+        
+        
+        for(int k=0;k<itemsl.count();k++)
+        {
+            QDomNodeList abl = itemsl.at(k).childNodes();
+            QDomNode temp=abl.at(k);
+            QDomNodeList ab = temp.childNodes();
+            for(int i=0; i<abl.count();i++)
+            {
+                QDomNode n = abl.item(i);
+                var.append("<tr>");
+                for(int j=0; j<ab.length();j++)
+                {
+                    QDomNode temp1 = ab.at(j);
+                    QDomElement fname = n.firstChildElement(temp1.nodeName());
+                    QString one = fname.text();
+                    var.append("<td>");
+                    var.append(one);
+                    var.append("</td>");
+                    //Content[temp1.nodeName()] += one;
+                    // qDebug()<<temp1.nodeName()<<one;
+                }
+                
+                for(int l=0;l<var.length();l++)
+                {
+                    html.insert(m,var.at(l));
+                    m++;
+                }
+                var.append("</tr>");
+                var="";
+                qDebug()<<endl;
+                // docMap.insert(i,Content);
+            }
+            
+        }
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    document.setHtml(html);
+    document.print(&printer);
+}
